@@ -1,0 +1,48 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: local-opendata
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "false"
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+
+---
+
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: opendata-pv-dags
+spec:
+  storageClassName: local-opendata
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 10Gi
+  claimRef:
+     namespace: opendata
+     name: pvc-opendata-dags
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - airflow-cluster-control-plane
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-opendata-dags
+spec:
+  storageClassName: local-opendata
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 3Gi
