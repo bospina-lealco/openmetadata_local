@@ -1,24 +1,23 @@
-# kind: StorageClass
-# apiVersion: storage.k8s.io/v1
-# metadata:
-#   name: local-opendata
-#   annotations:
-#     storageclass.kubernetes.io/is-default-class: "true"
-# parameters:
-#   type: gp2
-# provisioner: kubernetes.io/no-provisioner
-# volumeBindingMode: WaitForFirstConsumer
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: local-opendata
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+parameters:
+  type: gp2
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
 
-# ---
+---
 
 kind: PersistentVolume
 apiVersion: v1
 metadata:
   name: opendata-pv-dags
 spec:
-  # volumetype: None
   volumeMode: Filesystem
-  storageClassName: standar
+  storageClassName: local-opendata
   accessModes:
   - ReadWriteMany
   capacity:
@@ -39,16 +38,17 @@ spec:
           values:
           - airflow-cluster-control-plane
 
-# ---
+---
 
-# kind: PersistentVolumeClaim
-# apiVersion: v1
-# metadata:
-#   name: pvc-opendata-dags
-# spec:
-#   storageClassName: local-opendata
-#   accessModes:
-#     - ReadWriteMany
-#   resources:
-#     requests:
-#       storage: 3Gi
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-opendata-dags
+  namespace: opendata
+spec:
+  storageClassName: local-opendata
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 3Gi
