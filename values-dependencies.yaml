@@ -110,9 +110,9 @@ airflow:
       enabled: false
   dags:
     persistence:
-      enabled: false
+      enabled: true
       # NOTE: "" means cluster-default
-      storageClass: local-opendata
+      storageClass: "local-opendata"
       size: 1Gi
       accessMode: ReadWriteMany
       existingClaim: pvc-opendata-dags

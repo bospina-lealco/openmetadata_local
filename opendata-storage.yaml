@@ -26,25 +26,31 @@ spec:
      namespace: opendata
      name: pvc-opendata-dags
   nfs:
-      path: /tmp
+      path: "/airflow-dags"
       server: 172.17.0.2
-  persistentVolumeReclaimPolicy: Retain
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - airflow-cluster-control-plane
+  # persistentVolumeReclaimPolicy: Retain
+  # nodeAffinity:
+  #   required:
+  #     nodeSelectorTerms:
+  #     - matchExpressions:
+  #       - key: kubernetes.io/hostname
+  #         operator: In
+  #         values:
+  #         - airflow-cluster-control-plane
 
 ---
 
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
+  labels:
+    app: airflow
+    release: openmetadata-dependencies
   name: pvc-opendata-dags
   namespace: opendata
+# metadata:
+#   name: pvc-opendata-dags
+#   namespace: opendata
 spec:
   storageClassName: local-opendata
   accessModes:
